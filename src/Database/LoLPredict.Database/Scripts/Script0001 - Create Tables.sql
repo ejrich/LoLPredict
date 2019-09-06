@@ -1,0 +1,28 @@
+CREATE TABLE Game..Champion(
+	Id INTEGER NOT NULL,
+	Name VARCHAR(100) NOT NULL,
+	Image VARCHAR(100) NOT NULL,
+	Patch VARCHAR(10) NOT NULL
+);
+
+CREATE TABLE Game..Patch(
+	Number VARCHAR(10) PRIMARY KEY,
+	Live BIT NOT NULL,
+	Tournament BIT NOT NULL,
+);
+
+CREATE TABLE Game..GameResult(
+	Id BIGINT PRIMARY KEY,
+	Patch VARCHAR(20) NOT NULL,
+	BlueTop INT NOT NULL,
+	BlueJungle INT NOT NULL,
+	BlueMid INT NOT NULL,
+	BlueBottom INT NOT NULL,
+	BlueSupport INT NOT NULL,
+	RedTop INT NOT NULL,
+	RedJungle INT NOT NULL,
+	RedMid INT NOT NULL,
+	RedBottom INT NOT NULL,
+	RedSupport INT NOT NULL,
+	Winner BIT NOT NULL
+);

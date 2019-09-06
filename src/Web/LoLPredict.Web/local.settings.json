@@ -1,0 +1,9 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "CONNECTION_STRING": "Data Source=DESKTOP-1FQCUFM;Initial Catalog=Game;Integrated Security=True",
+    "AZURE_STORAGE": "DefaultEndpointsProtocol=https;AccountName=lolpredictdevmodels;AccountKey=VdFlYoIcWK7PzTU0lQSrqAp89XAsmxaKOSqKMv5ViZNc6bvs5WJGzAtDg1P9dDkB+FlmtKGHqk4BH1qrGpZhFg==;EndpointSuffix=core.windows.net"
+  }
+}
