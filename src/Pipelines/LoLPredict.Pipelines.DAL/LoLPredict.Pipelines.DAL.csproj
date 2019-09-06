@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LoLPredict.Database.Models" Version="1.0.11" />
+    <ProjectReference Include="..\..\Database\LoLPredict.Database.Models\LoLPredict.Database.Models.csproj" />
   </ItemGroup>
 
 </Project>
