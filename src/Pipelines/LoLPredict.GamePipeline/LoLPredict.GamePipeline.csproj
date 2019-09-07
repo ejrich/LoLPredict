@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RiotApi\RiotApi.csproj" />
+    <ProjectReference Include="..\LoLPredict.Pipelines.DAL\LoLPredict.Pipelines.DAL.csproj" />
   </ItemGroup>
 
 </Project>
