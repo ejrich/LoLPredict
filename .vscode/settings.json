@@ -1,0 +1,6 @@
+{
+  "azureFunctions.projectRuntime": "~2",
+  "azureFunctions.projectLanguage": "C#",
+  "azureFunctions.projectSubpath": "src/Web/LoLPredict.Web",
+  "debug.internalConsoleOptions": "neverOpen"
+}
