@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using LoLPredict.Pipelines.DAL;
 using RiotApi;
 using RiotApi.Models;
 
@@ -12,10 +13,12 @@ namespace LoLPredict.GamePipeline
     public class GamePipeline : IGamePipeline
     {
         private readonly IRestClientWrapper _client;
+        private readonly IGameRepository _gameRepository;
 
-        public GamePipeline(IRestClientFactory restClientFactory)
+        public GamePipeline(IRestClientFactory restClientFactory, IGameRepository gameRepository)
         {
             _client = restClientFactory.CreateRestClient("API");
+            _gameRepository = gameRepository;
         }
 
         public async Task LoadGames()
@@ -26,15 +29,45 @@ namespace LoLPredict.GamePipeline
             // 2. Load unique games
             foreach (var summoner in league.Entries)
             {
-                // TODO Lookup the summoner account in the database before falling back to the API
-                var account = await _client.GetAsync<Summoner>($"lol/summoner/v4/summoners/{ summoner.SummonerId }");
-                // TODO Store the summoner account in the database
+                var account = await GetAccount(summoner);
 
                 var matches = await _client.GetAsync<MatchList>($"lol/match/v4/matchlists/by-account/{ account.AccountId }?queue=420");
-                // TODO lookup the match Id to make sure we're not making extraneous API calls
+
+                foreach (var match in matches.Matches)
+                {
+                    if (_gameRepository.GameResultExists(match.GameId)) continue;
+
+                    var matchDetails = await _client.GetAsync<Match>($"lol/match/v4/matches/{ match.GameId }");
+
+                    // TODO Store the game data
+                }
             }
 
             // 3. Load the game, store picks and winner for model creation
+        }
+
+        private async Task<Database.Models.Summoner> GetAccount(LeagueSummoner summoner)
+        {
+            var account = _gameRepository.GetSummonerById(summoner.SummonerId);
+            if (account != null) return account;
+
+            var summonerAccount = await _client.GetAsync<RiotApi.Models.Summoner>($"lol/summoner/v4/summoners/{ summoner.SummonerId }");
+
+            account = MapSummonerToAccount(summonerAccount);
+            _gameRepository.InsertSummoner(account);
+
+            return account;
+        }
+
+        private Database.Models.Summoner MapSummonerToAccount(RiotApi.Models.Summoner summonerAccount)
+        {
+            return new Database.Models.Summoner
+            {
+                Id = summonerAccount.Id,
+                AccountId = summonerAccount.AccountId,
+                Name = summonerAccount.Name,
+                Puuid = summonerAccount.Puuid
+            };
         }
     }
 }

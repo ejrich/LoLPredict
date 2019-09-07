@@ -12,7 +12,10 @@ namespace LoLPredict.Pipelines.DAL
         void UpdatePatch(Patch patch);
         IEnumerable<Champion> LoadChampions(string patch);
         void InsertChampions(IEnumerable<Champion> champions);
+        bool GameResultExists(long id);
         IEnumerable<GameResult> LoadGameResults(string patch);
+        Summoner GetSummonerById(string id);
+        void InsertSummoner(Summoner summoner);
     }
 
     public class GameRepository : IGameRepository
@@ -66,11 +69,31 @@ namespace LoLPredict.Pipelines.DAL
             _context.SaveChangesAsync();
         }
 
+        public bool GameResultExists(long id)
+        {
+            var gameResult = _context.Results.FirstOrDefault(_ => _.Id == id);
+
+            return gameResult != null;
+        }
+
         public IEnumerable<GameResult> LoadGameResults(string patch)
         {
             var gameResults = _context.Results.Where(_ => _.Patch == patch).ToList();
 
             return gameResults;
+        }
+
+        public Summoner GetSummonerById(string id)
+        {
+            var summoner = _context.Summoners.FirstOrDefault(_ => _.Id == id);
+
+            return summoner;
+        }
+
+        public void InsertSummoner(Summoner summoner)
+        {
+            _context.Summoners.Add(summoner);
+            _context.SaveChangesAsync();
         }
     }
 }
