@@ -13,5 +13,45 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+- task: DotNetCoreCLI@2
+  displayName: 'Build'
+  inputs:
+    command: 'build'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Test'
+  inputs:
+    command: 'test'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Publish Database'
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+  inputs:
+    command: publish
+    projects: 'src/Database/LoLPredict.Database'
+    publishWebProjects: false
+    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/Database'
+    zipAfterPublish: false
+
+- task: DotNetCoreCLI@2
+  displayName: 'Publish Web'
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+  inputs:
+    command: publish
+    projects: 'src/Web/LoLPredict.Web'
+    publishWebProjects: false
+    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/Web'
+    zipAfterPublish: True
+
+- task: DotNetCoreCLI@2
+  displayName: 'Publish Pipelines'
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+  inputs:
+    command: publish
+    projects: 'src/Pipelines/LoLPredict.Pipelines'
+    publishWebProjects: false
+    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/Pipelines'
+    zipAfterPublish: True
+
+- task: PublishBuildArtifacts@1
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
