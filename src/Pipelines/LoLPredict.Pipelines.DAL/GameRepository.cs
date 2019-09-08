@@ -14,6 +14,7 @@ namespace LoLPredict.Pipelines.DAL
         void InsertChampions(IEnumerable<Champion> champions);
         bool GameResultExists(long id);
         IEnumerable<GameResult> LoadGameResults(string patch);
+        void InsertGameResult(GameResult result);
         Summoner GetSummonerById(string id);
         void InsertSummoner(Summoner summoner);
     }
@@ -81,6 +82,12 @@ namespace LoLPredict.Pipelines.DAL
             var gameResults = _context.Results.Where(_ => _.Patch == patch).ToList();
 
             return gameResults;
+        }
+
+        public void InsertGameResult(GameResult result)
+        {
+            _context.Results.Add(result);
+            _context.SaveChangesAsync();
         }
 
         public Summoner GetSummonerById(string id)
