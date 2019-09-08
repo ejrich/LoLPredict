@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using LoLPredict.Database.Models;
 using LoLPredict.Pipelines.DAL;
 using RiotApi;
 using RiotApi.Models;
@@ -37,13 +38,14 @@ namespace LoLPredict.GamePipeline
                 {
                     if (_gameRepository.GameResultExists(match.GameId)) continue;
 
+                    // 3. Load the game, store picks and winner for model creation
                     var matchDetails = await _client.GetAsync<Match>($"lol/match/v4/matches/{ match.GameId }");
 
-                    // TODO Store the game data
+                    var game = TranslateMatchToGame(matchDetails);
+                    if (game != null)
+                        _gameRepository.InsertGameResult(game);
                 }
             }
-
-            // 3. Load the game, store picks and winner for model creation
         }
 
         private async Task<Database.Models.Summoner> GetAccount(LeagueSummoner summoner)
@@ -67,6 +69,14 @@ namespace LoLPredict.GamePipeline
                 AccountId = summonerAccount.AccountId,
                 Name = summonerAccount.Name,
                 Puuid = summonerAccount.Puuid
+            };
+        }
+
+        private GameResult TranslateMatchToGame(Match match)
+        {
+            return new GameResult
+            {
+
             };
         }
     }
