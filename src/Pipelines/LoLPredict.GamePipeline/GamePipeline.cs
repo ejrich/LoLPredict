@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using LoLPredict.Database.Models;
 using LoLPredict.Pipelines.DAL;
 using RiotApi;
@@ -61,7 +63,7 @@ namespace LoLPredict.GamePipeline
             return account;
         }
 
-        private Database.Models.Summoner MapSummonerToAccount(RiotApi.Models.Summoner summonerAccount)
+        private static Database.Models.Summoner MapSummonerToAccount(RiotApi.Models.Summoner summonerAccount)
         {
             return new Database.Models.Summoner
             {
@@ -72,12 +74,43 @@ namespace LoLPredict.GamePipeline
             };
         }
 
-        private GameResult TranslateMatchToGame(Match match)
+        private static GameResult TranslateMatchToGame(Match match)
         {
-            return new GameResult
+            var result = new GameResult
             {
-
+                Id = match.GameId,
+                Patch = string.Join(".", match.GameVersion.Split('.').Take(2)),
+                BlueTop = GetChampionId(match, false, "TOP", "SOLO"),
+                BlueJungle = GetChampionId(match, false, "JUNGLE", "NONE"),
+                BlueMid = GetChampionId(match, false, "MIDDLE", "SOLO"),
+                BlueBottom = GetChampionId(match, false, "BOTTOM", "DUO_CARRY"),
+                BlueSupport = GetChampionId(match, false, "BOTTOM", "DUO_SUPPORT"),
+                RedTop = GetChampionId(match, true, "TOP", "SOLO"),
+                RedJungle = GetChampionId(match, true, "JUNGLE", "NONE"),
+                RedMid = GetChampionId(match, true, "MIDDLE", "SOLO"),
+                RedBottom = GetChampionId(match, true, "BOTTOM", "DUO_CARRY"),
+                RedSupport = GetChampionId(match, true, "BOTTOM", "DUO_SUPPORT"),
             };
+            var winner = match.Teams.FirstOrDefault(_ => _.Win == "Win");
+            if (winner == null || result.AnyUnassignedRoles()) return null;
+
+            result.Winner = winner.TeamId == 200;
+
+            return result;
+        }
+
+        private static int GetChampionId(Match match, bool team, string lane, string role)
+        {
+            Func<int, bool> teamComparer;
+            if (team)
+                teamComparer = x => x > 5;
+            else
+                teamComparer = x => x <= 5;
+
+            var player = match.Participants.FirstOrDefault(_ =>
+                _.TimeLine.Lane == lane && _.TimeLine.Role == role && teamComparer(_.ParticipantId)); 
+
+            return player?.ChampionId ?? 0;
         }
     }
 }
