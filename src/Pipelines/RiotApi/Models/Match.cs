@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace RiotApi.Models
 {
@@ -14,8 +14,8 @@ namespace RiotApi.Models
         public string GameType { get; set; }
         public long GameDuration { get; set; }
         public long GameCreation { get; set; }
-        // public IList<ParticipantIdentity> ParticipantIdentities { get; set; }
-        // public IList<Participant> Participants { get; set; }
-        // public IList<Team> Teams { get; set; }
+        public IList<ParticipantIdentity> ParticipantIdentities { get; set; }
+        public IList<Participant> Participants { get; set; }
+        public IList<Team> Teams { get; set; }
     }
 }
