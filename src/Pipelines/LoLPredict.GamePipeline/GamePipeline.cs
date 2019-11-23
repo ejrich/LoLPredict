@@ -18,6 +18,9 @@ namespace LoLPredict.GamePipeline
         private readonly IRestClientWrapper _client;
         private readonly IGameRepository _gameRepository;
 
+        private const bool BLUE = false;
+        private const bool RED = true;
+
         public GamePipeline(IRestClientFactory restClientFactory, IGameRepository gameRepository)
         {
             _client = restClientFactory.CreateRestClient("API");
@@ -80,16 +83,16 @@ namespace LoLPredict.GamePipeline
             {
                 Id = match.GameId,
                 Patch = string.Join(".", match.GameVersion.Split('.').Take(2)),
-                BlueTop = GetChampionId(match, false, "TOP", "SOLO"),
-                BlueJungle = GetChampionId(match, false, "JUNGLE", "NONE"),
-                BlueMid = GetChampionId(match, false, "MIDDLE", "SOLO"),
-                BlueBottom = GetChampionId(match, false, "BOTTOM", "DUO_CARRY"),
-                BlueSupport = GetChampionId(match, false, "BOTTOM", "DUO_SUPPORT"),
-                RedTop = GetChampionId(match, true, "TOP", "SOLO"),
-                RedJungle = GetChampionId(match, true, "JUNGLE", "NONE"),
-                RedMid = GetChampionId(match, true, "MIDDLE", "SOLO"),
-                RedBottom = GetChampionId(match, true, "BOTTOM", "DUO_CARRY"),
-                RedSupport = GetChampionId(match, true, "BOTTOM", "DUO_SUPPORT"),
+                BlueTop = GetChampionId(match, BLUE, "TOP", "SOLO"),
+                BlueJungle = GetChampionId(match, BLUE, "JUNGLE", "NONE"),
+                BlueMid = GetChampionId(match, BLUE, "MIDDLE", "SOLO"),
+                BlueBottom = GetChampionId(match, BLUE, "BOTTOM", "DUO_CARRY"),
+                BlueSupport = GetChampionId(match, BLUE, "BOTTOM", "DUO_SUPPORT"),
+                RedTop = GetChampionId(match, RED, "TOP", "SOLO"),
+                RedJungle = GetChampionId(match, RED, "JUNGLE", "NONE"),
+                RedMid = GetChampionId(match, RED, "MIDDLE", "SOLO"),
+                RedBottom = GetChampionId(match, RED, "BOTTOM", "DUO_CARRY"),
+                RedSupport = GetChampionId(match, RED, "BOTTOM", "DUO_SUPPORT"),
             };
             var winner = match.Teams.FirstOrDefault(_ => _.Win == "Win");
             if (winner == null || result.AnyUnassignedRoles()) return null;
