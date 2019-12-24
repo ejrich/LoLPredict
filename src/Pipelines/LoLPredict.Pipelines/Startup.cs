@@ -31,6 +31,8 @@ namespace LoLPredict.Pipelines
             services.AddTransient<IGameRepository, GameRepository>();
             services.AddTransient<IGamePipeline, GamePipeline.GamePipeline>();
             services.AddTransient<IRestClientFactory, RestClientFactory>();
+            services.AddTransient<IMatchGenerator, MatchGenerator>();
+            services.AddTransient<IRiotModelMapper, RiotModelMapper>();
 
             services.AddScoped<MLContext>();
         }

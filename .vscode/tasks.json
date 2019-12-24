@@ -10,6 +10,17 @@
                 "${workspaceFolder}"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "type": "func",
+            "dependsOn": "build",
+            "options": {
+                // "cwd": "${workspaceFolder}/src/Web/LoLPredict.Web/bin/Debug/netcoreapp2.1"
+                "cwd": "${workspaceFolder}/src/Pipelines/LoLPredict.Pipelines/bin/Debug/netcoreapp2.1"
+            },
+            "command": "host start",
+            "isBackground": true,
+            "problemMatcher": "$func-watch"
         }
     ]
 }
