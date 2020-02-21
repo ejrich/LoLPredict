@@ -5,6 +5,7 @@ using LoLPredict.Web.DAL;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
 
 namespace LoLPredict.Web.Controllers
 {
@@ -19,8 +20,8 @@ namespace LoLPredict.Web.Controllers
 
         // GET: api/v1/champion
         [FunctionName(nameof(RetrieveAllChampions))]
-        public async Task<IEnumerable<Champion>> RetrieveAllChampions([HttpTrigger("Get",
-            Route = "api/v1/champion/{patch}")] HttpRequest request, string patch)
+        public async Task<IEnumerable<Champion>> RetrieveAllChampions([HttpTrigger(AuthorizationLevel.Anonymous,
+            "Get", Route = "api/v1/champion/{patch}")] HttpRequest request, string patch)
         {
             return await _gameRepository.LoadChampionsByPatch(patch);
         }

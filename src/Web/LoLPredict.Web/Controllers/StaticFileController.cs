@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
 
 namespace LoLPredict.Web.Controllers
 {
@@ -19,7 +20,8 @@ namespace LoLPredict.Web.Controllers
 
         // GET: {fileName}
         [FunctionName(nameof(RetrieveFile))]
-        public async Task<IActionResult> RetrieveFile([HttpTrigger("Get", Route = "{fileName}")] HttpRequest request, string fileName)
+        public async Task<IActionResult> RetrieveFile([HttpTrigger(AuthorizationLevel.Anonymous,
+            "Get", Route = "{fileName}")] HttpRequest request, string fileName)
         {
             var path = GetFilePath(fileName);
 
@@ -28,7 +30,8 @@ namespace LoLPredict.Web.Controllers
 
         // GET: /static/{js|css}{fileName}
         [FunctionName(nameof(RetrieveStaticFile))]
-        public async Task<IActionResult> RetrieveStaticFile([HttpTrigger("Get", Route = "static/{resource:regex(js|css)}/{fileName}")] HttpRequest request, string resource, string fileName)
+        public async Task<IActionResult> RetrieveStaticFile([HttpTrigger(AuthorizationLevel.Anonymous,
+            "Get", Route = "static/{resource:regex(js|css)}/{fileName}")] HttpRequest request, string resource, string fileName)
         {
             var resourcePath = Path.Combine("static", resource, fileName);
             var path = GetFilePath(resourcePath);
