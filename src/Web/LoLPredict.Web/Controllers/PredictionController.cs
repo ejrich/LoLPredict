@@ -4,6 +4,7 @@ using LoLPredict.Web.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.ML;
 
 namespace LoLPredict.Web.Controllers
@@ -21,8 +22,8 @@ namespace LoLPredict.Web.Controllers
 
         // POST: api/v1/prediction/
         [FunctionName(nameof(MakePrediction))]
-        public async Task<IActionResult> MakePrediction([HttpTrigger("Post",
-            Route = "api/v1/prediction")] HttpRequest request)
+        public async Task<IActionResult> MakePrediction([HttpTrigger(AuthorizationLevel.Anonymous,
+            "Post", Route = "api/v1/prediction")] HttpRequest request)
         {
             var predictionRequest = await request.Convert<PredictionRequest>();
 
