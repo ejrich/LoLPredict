@@ -11,7 +11,8 @@ namespace LoLPredict.Web.Controllers
     {
         // GET: /
         [FunctionName(nameof(Index))]
-        public async Task<IActionResult> Index([HttpTrigger("Get", Route = "/")] HttpRequest request)
+        public async Task<IActionResult> Index([HttpTrigger(AuthorizationLevel.Anonymous,
+            "Get", Route = "/")] HttpRequest request)
         {
             var index = GetFilePath("index.html");
 
