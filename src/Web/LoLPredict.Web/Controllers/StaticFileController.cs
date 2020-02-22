@@ -12,9 +12,9 @@ namespace LoLPredict.Web.Controllers
         // GET: /
         [FunctionName(nameof(Index))]
         public async Task<IActionResult> Index([HttpTrigger(AuthorizationLevel.Anonymous,
-            "Get", Route = "/")] HttpRequest request)
+            "Get", Route = "/")] HttpRequest request, ExecutionContext context)
         {
-            var index = GetFilePath("index.html");
+            var index = GetFilePath(context.FunctionAppDirectory, "index.html");
 
             return await ReturnFileIfExists(index);
         }
@@ -22,9 +22,9 @@ namespace LoLPredict.Web.Controllers
         // GET: {fileName}
         [FunctionName(nameof(RetrieveFile))]
         public async Task<IActionResult> RetrieveFile([HttpTrigger(AuthorizationLevel.Anonymous,
-            "Get", Route = "{fileName}")] HttpRequest request, string fileName)
+            "Get", Route = "{fileName}")] HttpRequest request, ExecutionContext context, string fileName)
         {
-            var path = GetFilePath(fileName);
+            var path = GetFilePath(context.FunctionAppDirectory, fileName);
 
             return await ReturnFileIfExists(path);
         }
@@ -32,18 +32,17 @@ namespace LoLPredict.Web.Controllers
         // GET: /static/{js|css}{fileName}
         [FunctionName(nameof(RetrieveStaticFile))]
         public async Task<IActionResult> RetrieveStaticFile([HttpTrigger(AuthorizationLevel.Anonymous,
-            "Get", Route = "static/{resource:regex(js|css)}/{fileName}")] HttpRequest request, string resource, string fileName)
+            "Get", Route = "static/{resource:regex(js|css)}/{fileName}")] HttpRequest request, 
+            ExecutionContext context, string resource, string fileName)
         {
             var resourcePath = Path.Combine("static", resource, fileName);
-            var path = GetFilePath(resourcePath);
+            var path = GetFilePath(context.FunctionAppDirectory, resourcePath);
 
             return await ReturnFileIfExists(path);
         }
 
-        private static string GetFilePath(string fileName)
+        private static string GetFilePath(string root, string fileName)
         {
-            var root = Directory.GetCurrentDirectory();
-
             var path = Path.Combine(root, "ClientApp", "build", fileName);
 
             return path;
