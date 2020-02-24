@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using LoLPredict.Pipelines.DAL;
+using Microsoft.Extensions.Options;
 using RiotApi;
 using RiotApi.Models;
 
@@ -18,9 +19,9 @@ namespace LoLPredict.GamePipeline
         private readonly IRiotModelMapper _riotModelMapper;
 
         public MatchGenerator(IRestClientFactory restClientFactory, IGameRepository gameRepository,
-            IRiotModelMapper riotModelMapper)
+            IRiotModelMapper riotModelMapper, IOptionsMonitor<Settings> options)
         {
-            _client = restClientFactory.CreateRestClient("API");
+            _client = restClientFactory.CreateRestClient(options.CurrentValue.RiotApiUrl, options.CurrentValue.RiotApiToken);
             _gameRepository = gameRepository;
             _riotModelMapper = riotModelMapper;
         }
@@ -39,14 +40,14 @@ namespace LoLPredict.GamePipeline
 
                 foreach (var match in matches.Matches)
                 {
-                    if (_gameRepository.GameResultExists(match.GameId)) continue;
+                    if (await _gameRepository.GameResultExists(match.GameId)) continue;
 
                     // 3. Load the game, store picks and winner for model creation
                     var matchDetails = await _client.GetAsync<Match>($"lol/match/v4/matches/{ match.GameId }");
 
                     var game = _riotModelMapper.TranslateMatchToGame(matchDetails);
                     if (game != null)
-                        _gameRepository.InsertGameResult(game);
+                        await _gameRepository.InsertGameResult(game);
                 }
             }
         }
@@ -58,13 +59,13 @@ namespace LoLPredict.GamePipeline
 
         private async Task<Database.Models.Summoner> GetAccount(LeagueSummoner summoner)
         {
-            var account = _gameRepository.GetSummonerById(summoner.SummonerId);
+            var account = await _gameRepository.GetSummonerById(summoner.SummonerId);
             if (account != null) return account;
 
             var summonerAccount = await _client.GetAsync<RiotApi.Models.Summoner>($"lol/summoner/v4/summoners/{ summoner.SummonerId }");
 
             account = _riotModelMapper.MapSummonerToAccount(summonerAccount);
-            _gameRepository.InsertSummoner(account);
+            await _gameRepository.InsertSummoner(account);
 
             return account;
         }

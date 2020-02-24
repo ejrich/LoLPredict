@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using LoLPredict.Database.Models;
 using LoLPredict.Pipelines.DAL;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using RiotApi;
 using RiotApi.Models;
 
@@ -22,17 +23,17 @@ namespace LoLPredict.PatchPipeline
         private readonly ILogger _log;
 
         public PatchPipeline(IGameRepository gameRepository, IRestClientFactory restClientFactory,
-            ILogger<PatchPipeline> log)
+            IOptionsMonitor<Settings> options, ILogger<PatchPipeline> log)
         {
             _gameRepository = gameRepository;
             _log = log;
-            _client = restClientFactory.CreateRestClient("STATIC_DATA");
+            _client = restClientFactory.CreateRestClient(options.CurrentValue.StaticDataEndpoint, string.Empty);
         }
 
         public async Task<PatchData> UpdatePatch()
         {
             // 1. Load the current live patch
-            var livePatch = _gameRepository.LoadLivePatch();
+            var livePatch = await _gameRepository.LoadLivePatch();
 
             // 2. Make a call to get the latest patch information
             var currentPatch = await LoadCurrentPatch();
@@ -42,20 +43,20 @@ namespace LoLPredict.PatchPipeline
             {
                 _log.LogInformation("Applying new patch");
                 // Insert a new patch record
-                _gameRepository.InsertPatch(currentPatch.V, true);
+                await _gameRepository.InsertPatch(currentPatch.V, true);
 
                 // Set the previous patch to not live
                 if (livePatch != null)
                 {
                     livePatch.Live = false;
-                    _gameRepository.UpdatePatch(livePatch);
+                    await _gameRepository.UpdatePatch(livePatch);
                 }
 
                 // load champion data
                 var champions = await LoadChampions(currentPatch.V);
 
                 // Insert champion records
-                _gameRepository.InsertChampions(champions);
+                await _gameRepository.InsertChampions(champions);
 
                 return new PatchData
                 {

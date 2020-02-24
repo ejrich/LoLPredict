@@ -1,16 +1,19 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using LoLPredict.Database.Models;
+using LoLPredict.Pipelines.DAL;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.File;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.ML;
 
 namespace LoLPredict.ModelPipeline.Domain
 {
     public interface IModelStorageService
     {
-        void StoreModel(GameModel model);
+        Task StoreModel(GameModel model);
     }
 
     public class ModelStorageService : IModelStorageService
@@ -20,17 +23,18 @@ namespace LoLPredict.ModelPipeline.Domain
         private readonly ILogger _log;
         private readonly CloudFileClient _fileClient;
 
-        public ModelStorageService(MLContext context, GameContext dataContext, ILogger log)
+        public ModelStorageService(MLContext context, GameContext dataContext,
+            IOptionsMonitor<Settings> options, ILogger log)
         {
             _context = context;
             _dataContext = dataContext;
             _log = log;
 
-            var storageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("AZURE_CONNECTION_STRING", EnvironmentVariableTarget.Process));
+            var storageAccount = CloudStorageAccount.Parse(options.CurrentValue.AzureStorageConnectionString);
             _fileClient = storageAccount.CreateCloudFileClient();
         }
 
-        public void StoreModel(GameModel model)
+        public async Task StoreModel(GameModel model)
         {
             var share = _fileClient.GetShareReference("patches");
              share.CreateIfNotExists();
@@ -52,12 +56,12 @@ namespace LoLPredict.ModelPipeline.Domain
                 file.UploadFromByteArray(byteArray, 0, Convert.ToInt32(stream.Length));
             }
 
-            _dataContext.Models.Add(new Model
+            await _dataContext.Models.AddAsync(new Model
             {
                 Patch = model.Patch,
                 Name = file.Name
             });
-            _dataContext.SaveChanges();
+            await _dataContext.SaveChangesAsync();
         }
     }
 }
