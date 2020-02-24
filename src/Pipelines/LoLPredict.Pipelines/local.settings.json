@@ -3,10 +3,10 @@
   "Values": {
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
-    "CONNECTION_STRING": "Data Source=DESKTOP-1FQCUFM;Initial Catalog=Game;Integrated Security=True",
-    "AZURE_CONNECTION_STRING": "***REMOVED***",
-    "STATIC_DATA": "https://ddragon.leagueoflegends.com",
-    "API": "https://na1.api.riotgames.com",
-    "TOKEN": "RGAPI-7c421c3b-04a3-455d-8027-8085e57b427e"
+    "ConnectionStrings__Game": "Data Source=DESKTOP-1FQCUFM;Initial Catalog=Game;Integrated Security=True",
+    "AzureStorageConnectionString": "***REMOVED***",
+    "StaticDataEndpoint": "https://ddragon.leagueoflegends.com",
+    "RiotApiUrl": "https://na1.api.riotgames.com",
+    "RiotApiToken": "RGAPI-7c421c3b-04a3-455d-8027-8085e57b427e"
   }
 }

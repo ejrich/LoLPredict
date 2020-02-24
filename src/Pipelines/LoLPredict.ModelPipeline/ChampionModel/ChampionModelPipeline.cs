@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using LoLPredict.Database.Models;
 using LoLPredict.ModelPipeline.Domain.Models;
 using LoLPredict.Pipelines.DAL;
@@ -22,18 +23,18 @@ namespace LoLPredict.ModelPipeline.ChampionModel
             _gameRepository = gameRepository;
         }
 
-        public GameModel CreateModel()
+        public async Task<GameModel> CreateModel()
         {
-            var livePatch = _gameRepository.LoadLivePatch();
+            var livePatch = await _gameRepository.LoadLivePatch();
             if (livePatch == null)
                 return null;
 
-            var championIds = _gameRepository.LoadChampions(livePatch.Number())
+            var championIds = (await _gameRepository.LoadChampions(livePatch.Number()))
                 .Select(_ => new ChampionId { Id = _.Id });
 
             var uniqueChampions = _context.Data.LoadFromEnumerable(championIds);
 
-            var gameResults = _gameRepository.LoadGameResults(livePatch.Number())
+            var gameResults = (await _gameRepository.LoadGameResults(livePatch.Number()))
                 .Select(MapGameToInputGame);
 
             var data = _context.Data.LoadFromEnumerable(gameResults);

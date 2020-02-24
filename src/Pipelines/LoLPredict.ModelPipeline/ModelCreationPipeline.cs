@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using LoLPredict.ModelPipeline.Domain;
 using Microsoft.Extensions.Logging;
 
@@ -6,7 +7,7 @@ namespace LoLPredict.ModelPipeline
 {
     public interface IModelCreationPipeline
     {
-        void CreateModels();
+        Task CreateModels();
     }
 
     public class ModelCreationPipeline : IModelCreationPipeline
@@ -23,13 +24,13 @@ namespace LoLPredict.ModelPipeline
             _log = log;
         }
 
-        public void CreateModels()
+        public async Task CreateModels()
         {
             foreach (var modelFactory in _modelFactories)
             {
                 _log.LogInformation($"Creating model - {modelFactory.GetType().Name}");
 
-                var model = modelFactory.CreateModel();
+                var model = await modelFactory.CreateModel();
 
                 if (model != null)
                     _modelStorageService.StoreModel(model);

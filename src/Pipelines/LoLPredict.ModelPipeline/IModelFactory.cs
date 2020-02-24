@@ -1,7 +1,9 @@
-﻿namespace LoLPredict.ModelPipeline
+﻿using System.Threading.Tasks;
+
+namespace LoLPredict.ModelPipeline
 {
     public interface IModelFactory
     {
-        GameModel CreateModel();
+        Task<GameModel> CreateModel();
     }
 }

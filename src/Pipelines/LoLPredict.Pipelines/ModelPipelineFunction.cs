@@ -1,4 +1,5 @@
-﻿using LoLPredict.ModelPipeline;
+﻿using System.Threading.Tasks;
+using LoLPredict.ModelPipeline;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -17,11 +18,11 @@ namespace LoLPredict.Pipelines
         }
 
         [FunctionName("ModelPipeline")]
-        public IActionResult Run(
+        public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            _modelCreationPipeline.CreateModels();
+            await _modelCreationPipeline.CreateModels();
 
             return new OkObjectResult("Models successfully created");
         }

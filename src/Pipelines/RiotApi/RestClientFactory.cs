@@ -5,24 +5,16 @@ namespace RiotApi
 {
     public interface IRestClientFactory
     {
-        IRestClientWrapper CreateRestClient(string baseUrl);
+        IRestClientWrapper CreateRestClient(string baseUrl, string token);
     }
 
     public class RestClientFactory : IRestClientFactory
     {
-        public IRestClientWrapper CreateRestClient(string name)
+        public IRestClientWrapper CreateRestClient(string baseUrl, string token)
         {
-            var baseUrl = GetEnvironmentVariable(name);
-            var token = GetEnvironmentVariable("TOKEN");
-
             var restClient = new RestClient(baseUrl);
 
             return new RestClientWrapper(restClient, token);
-        }
-
-        private static string GetEnvironmentVariable(string name)
-        {
-            return Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Process);
         }
     }
 }

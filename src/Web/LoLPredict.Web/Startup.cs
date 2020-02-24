@@ -40,10 +40,5 @@ namespace LoLPredict.Web
             NpmScriptRunner.CreateNodeServer("../../../ClientApp", "start", "5000");
             #endif
         }
-
-        private static string GetEnvironmentVariable(string name)
-        {
-            return Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Process);
-        }
     }
 }
