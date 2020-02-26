@@ -33,7 +33,7 @@ namespace LoLPredict.ModelPipeline
                 var model = await modelFactory.CreateModel();
 
                 if (model != null)
-                    _modelStorageService.StoreModel(model);
+                    await _modelStorageService.StoreModel(model);
             }
         }
     }
