@@ -19,15 +19,15 @@ namespace LoLPredict.ModelPipeline.Domain
     public class ModelStorageService : IModelStorageService
     {
         private readonly MLContext _context;
-        private readonly GameContext _dataContext;
+        private readonly IGameRepository _gameRepository;
         private readonly ILogger _log;
         private readonly CloudFileClient _fileClient;
 
-        public ModelStorageService(MLContext context, GameContext dataContext,
+        public ModelStorageService(MLContext context, IGameRepository gameRepository,
             IOptionsMonitor<Settings> options, ILogger log)
         {
             _context = context;
-            _dataContext = dataContext;
+            _gameRepository = gameRepository;
             _log = log;
 
             var storageAccount = CloudStorageAccount.Parse(options.CurrentValue.AzureStorageConnectionString);
@@ -56,12 +56,11 @@ namespace LoLPredict.ModelPipeline.Domain
                 file.UploadFromByteArray(byteArray, 0, Convert.ToInt32(stream.Length));
             }
 
-            await _dataContext.Models.AddAsync(new Model
+            await _gameRepository.InsertModel(new Model
             {
                 Patch = model.Patch,
                 Name = file.Name
             });
-            await _dataContext.SaveChangesAsync();
         }
     }
 }
