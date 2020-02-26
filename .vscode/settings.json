@@ -3,5 +3,10 @@
   "azureFunctions.projectLanguage": "C#",
   // "azureFunctions.projectSubpath": "src/Web/LoLPredict.Web",
   "azureFunctions.projectSubpath": "src/Pipelines/LoLPredict.Pipelines",
-  "debug.internalConsoleOptions": "neverOpen"
+  "debug.internalConsoleOptions": "neverOpen",
+  "files.exclude": {
+    "**/bin": true,
+    "**/obj": true,
+    "**/TestResults": true
+  }
 }

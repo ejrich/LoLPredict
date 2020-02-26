@@ -19,6 +19,7 @@ namespace LoLPredict.Pipelines.DAL
         Task InsertGameResult(GameResult result);
         Task<Summoner> GetSummonerById(string id);
         Task InsertSummoner(Summoner summoner);
+        Task InsertModel(Model model);
     }
 
     public class GameRepository : IGameRepository
@@ -102,6 +103,12 @@ namespace LoLPredict.Pipelines.DAL
         public async Task InsertSummoner(Summoner summoner)
         {
             await _context.Summoners.AddAsync(summoner);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task InsertModel(Model model)
+        {
+            await _context.Models.AddAsync(model);
             await _context.SaveChangesAsync();
         }
     }
