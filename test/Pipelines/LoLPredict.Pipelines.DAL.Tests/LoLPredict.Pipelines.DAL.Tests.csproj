@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.2.6" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.0.0" />
     <PackageReference Include="MSTest.TestFramework" Version="2.0.0" />
@@ -14,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Pipelines\LoLPredict.Pipelines\LoLPredict.Pipelines.csproj" />
+    <ProjectReference Include="..\..\..\src\Pipelines\LoLPredict.Pipelines.DAL\LoLPredict.Pipelines.DAL.csproj" />
   </ItemGroup>
 
 </Project>
