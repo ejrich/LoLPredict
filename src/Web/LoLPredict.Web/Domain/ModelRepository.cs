@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using LoLPredict.Web.DAL;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.File;
+using Microsoft.Extensions.Options;
 using Microsoft.ML;
 
 namespace LoLPredict.Web.Domain
@@ -15,14 +16,14 @@ namespace LoLPredict.Web.Domain
     public class ModelRepository : IModelRepository
     {
         private readonly MLContext _context;
-        private readonly IConfigurationProxy _config;
         private readonly IGameRepository _gameRepository;
+        private readonly Settings _settings;
 
-        public ModelRepository(MLContext context, IConfigurationProxy config, IGameRepository gameRepository)
+        public ModelRepository(MLContext context, IGameRepository gameRepository, IOptionsMonitor<Settings> options)
         {
             _context = context;
-            _config = config;
             _gameRepository = gameRepository;
+            _settings = options.CurrentValue;
         }
 
         public async Task<ITransformer> LoadModel(string patch)
@@ -31,7 +32,7 @@ namespace LoLPredict.Web.Domain
 
             if (modelName == null) return null;
 
-            var storageAccount = CloudStorageAccount.Parse(_config.AzureStorageConnectionString); 
+            var storageAccount = CloudStorageAccount.Parse(_settings.AzureStorageConnectionString); 
             var fileClient = storageAccount.CreateCloudFileClient();
             var share = fileClient.GetShareReference("patches");
             var dir = share.GetRootDirectoryReference();

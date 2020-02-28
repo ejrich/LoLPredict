@@ -5,6 +5,7 @@ using LoLPredict.Web.DAL;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.ML;
 
@@ -16,12 +17,16 @@ namespace LoLPredict.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var configuration = new ConfigurationBuilder()
+                .AddEnvironmentVariables()
+                .Build();
+
+            services.Configure<Settings>(configuration);
             services.AddDbContext<GameContext>(options =>
-                options.UseSqlServer(GetEnvironmentVariable("CONNECTION_STRING")));
+                options.UseSqlServer(configuration.GetConnectionString("Game")));
 
             services.AddTransient<IGameRepository, GameRepository>();
             services.AddTransient<IModelRepository, ModelRepository>();
-            services.AddTransient<IConfigurationProxy, ConfigurationProxy>();
 
             services.AddScoped<MLContext>();
         }
@@ -34,11 +39,6 @@ namespace LoLPredict.Web
             #if DEBUG
             NpmScriptRunner.CreateNodeServer("../../../ClientApp", "start", "5000");
             #endif
-        }
-
-        private static string GetEnvironmentVariable(string name)
-        {
-            return Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Process);
         }
     }
 }

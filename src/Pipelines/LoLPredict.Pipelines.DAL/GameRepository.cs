@@ -1,22 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using LoLPredict.Database.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace LoLPredict.Pipelines.DAL
 {
     public interface IGameRepository
     {
-        Patch LoadLivePatch();
-        void InsertPatch(string number, bool live);
-        void UpdatePatch(Patch patch);
-        IEnumerable<Champion> LoadChampions(string patch);
-        void InsertChampions(IEnumerable<Champion> champions);
-        bool GameResultExists(long id);
-        IEnumerable<GameResult> LoadGameResults(string patch);
-        void InsertGameResult(GameResult result);
-        Summoner GetSummonerById(string id);
-        void InsertSummoner(Summoner summoner);
+        Task<Patch> LoadLivePatch();
+        Task InsertPatch(string number, bool live);
+        Task UpdatePatch(Patch patch);
+        Task<IEnumerable<Champion>> LoadChampions(string patch);
+        Task InsertChampions(IEnumerable<Champion> champions);
+        Task<bool> GameResultExists(long id);
+        Task<IEnumerable<GameResult>> LoadGameResults(string patch);
+        Task InsertGameResult(GameResult result);
+        Task<Summoner> GetSummonerById(string id);
+        Task InsertSummoner(Summoner summoner);
+        Task InsertModel(Model model);
     }
 
     public class GameRepository : IGameRepository
@@ -28,14 +31,14 @@ namespace LoLPredict.Pipelines.DAL
             _context = context;
         }
 
-        public Patch LoadLivePatch()
+        public async Task<Patch> LoadLivePatch()
         {
-            var livePatch = _context.Patches.SingleOrDefault(_ => _.Live);
+            var livePatch = await _context.Patches.SingleOrDefaultAsync(_ => _.Live);
 
             return livePatch;
         }
 
-        public void InsertPatch(string number, bool live)
+        public async Task InsertPatch(string number, bool live)
         {
             var patchComponents = number.Split('.')
                 .Select(_ => Convert.ToInt32(_))
@@ -48,59 +51,65 @@ namespace LoLPredict.Pipelines.DAL
                 Version = patchComponents[2],
                 Live = live
             });
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
-        public void UpdatePatch(Patch patch)
+        public async Task UpdatePatch(Patch patch)
         {
             _context.Patches.Update(patch);
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
-        public IEnumerable<Champion> LoadChampions(string patch)
+        public async Task<IEnumerable<Champion>> LoadChampions(string patch)
         {
-            var champions = _context.Champions.Where(_ => _.Patch == patch).ToList();
+            var champions = await _context.Champions.Where(_ => _.Patch == patch).ToListAsync();
 
             return champions;
         }
 
-        public void InsertChampions(IEnumerable<Champion> champions)
+        public async Task InsertChampions(IEnumerable<Champion> champions)
         {
-            _context.AddRange(champions);
-            _context.SaveChangesAsync();
+            await _context.AddRangeAsync(champions);
+            await _context.SaveChangesAsync();
         }
 
-        public bool GameResultExists(long id)
+        public async Task<bool> GameResultExists(long id)
         {
-            var gameResult = _context.Results.FirstOrDefault(_ => _.Id == id);
+            var gameResult = await _context.Results.FirstOrDefaultAsync(_ => _.Id == id);
 
             return gameResult != null;
         }
 
-        public IEnumerable<GameResult> LoadGameResults(string patch)
+        public async Task<IEnumerable<GameResult>> LoadGameResults(string patch)
         {
-            var gameResults = _context.Results.Where(_ => _.Patch == patch).ToList();
+            var gameResults = await _context.Results.Where(_ => _.Patch == patch).ToListAsync();
 
             return gameResults;
         }
 
-        public void InsertGameResult(GameResult result)
+        public async Task InsertGameResult(GameResult result)
         {
-            _context.Results.Add(result);
-            _context.SaveChangesAsync();
+            await _context.Results.AddAsync(result);
+            await _context.SaveChangesAsync();
         }
 
-        public Summoner GetSummonerById(string id)
+        public async Task<Summoner> GetSummonerById(string id)
         {
-            var summoner = _context.Summoners.FirstOrDefault(_ => _.Id == id);
+            var summoner = await _context.Summoners.FirstOrDefaultAsync(_ => _.Id == id);
 
             return summoner;
         }
 
-        public void InsertSummoner(Summoner summoner)
+        public async Task InsertSummoner(Summoner summoner)
         {
-            _context.Summoners.Add(summoner);
-            _context.SaveChangesAsync();
+            await _context.Summoners.AddAsync(summoner);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task InsertModel(Model model)
+        {
+            await _context.Models.AddAsync(model);
+            await _context.SaveChangesAsync();
         }
     }
 }

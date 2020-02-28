@@ -1,5 +1,4 @@
-﻿using System;
-using LoLPredict.Database.Models;
+﻿using LoLPredict.Database.Models;
 using LoLPredict.GamePipeline;
 using LoLPredict.ModelPipeline;
 using LoLPredict.ModelPipeline.ChampionModel;
@@ -9,6 +8,7 @@ using LoLPredict.Pipelines.DAL;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.ML;
 using RiotApi;
@@ -20,8 +20,13 @@ namespace LoLPredict.Pipelines
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            var configuration = new ConfigurationBuilder()
+                .AddEnvironmentVariables()
+                .Build();
+
+            services.Configure<Settings>(configuration);
             services.AddDbContext<GameContext>(options =>
-                options.UseSqlServer(GetEnvironmentVariable("CONNECTION_STRING")));
+                options.UseSqlServer(configuration.GetConnectionString("Game")));
 
             services.AddTransient<IModelStorageService, ModelStorageService>();
             services.AddTransient<IModelCreationPipeline, ModelCreationPipeline>();
@@ -40,11 +45,6 @@ namespace LoLPredict.Pipelines
         public void Configure(IWebJobsBuilder builder)
         {
             ConfigureServices(builder.Services);
-        }
-
-        private static string GetEnvironmentVariable(string name)
-        {
-            return Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Process);
         }
     }
 }
