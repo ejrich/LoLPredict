@@ -92,12 +92,16 @@ namespace LoLPredict.PatchPipeline
 
         private static Champion MapChampionDataToChampion(ChampionData champ)
         {
+            var patchComponents = champ.Version.CreatePatchComponents();
+
             return new Champion
             {
                 Id = Convert.ToInt32(champ.Key),
                 Name = champ.Name,
                 Image = champ.Image.Full.Substring(0, champ.Image.Full.Length - 4),
-                Patch = champ.Version
+                Major = patchComponents[0],
+                Minor = patchComponents[1],
+                Version = patchComponents[2]
             };
         }
     }

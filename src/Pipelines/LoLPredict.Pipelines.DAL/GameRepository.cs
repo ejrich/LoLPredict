@@ -40,9 +40,7 @@ namespace LoLPredict.Pipelines.DAL
 
         public async Task InsertPatch(string number, bool live)
         {
-            var patchComponents = number.Split('.')
-                .Select(_ => Convert.ToInt32(_))
-                .ToList();
+            var patchComponents = number.CreatePatchComponents();
 
             _context.Patches.Add(new Patch
             {
@@ -62,7 +60,11 @@ namespace LoLPredict.Pipelines.DAL
 
         public async Task<IEnumerable<Champion>> LoadChampions(string patch)
         {
-            var champions = await _context.Champions.Where(_ => _.Patch == patch).ToListAsync();
+            var patchComponents = patch.CreatePatchComponents();
+
+            var champions = await _context.Champions
+                .Where(c => c.Major <= patchComponents[0] && c.Minor <= patchComponents[1])
+                .ToListAsync();
 
             return champions;
         }

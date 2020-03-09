@@ -48,7 +48,7 @@ namespace LoLPredict.Web.Tests.DAL
         {
             var expectedChampions = new List<Champion>
             {
-                CreateChampion(1, "Annie", "9.8"), CreateChampion(2, "Aatrox", "9.8")
+                CreateChampion(1, "Annie", 9, 8), CreateChampion(2, "Aatrox", 9, 8)
             };
 
             await _context.Champions.AddRangeAsync(expectedChampions);
@@ -94,13 +94,14 @@ namespace LoLPredict.Web.Tests.DAL
             };
         }
 
-        private Champion CreateChampion(int id, string name, string patch)
+        private Champion CreateChampion(int id, string name, int major, int minor)
         {
             return new Champion
             {
                 Id = id,
                 Name = name,
-                Patch = patch
+                Major = major,
+                Minor = minor
             };
         }
 
