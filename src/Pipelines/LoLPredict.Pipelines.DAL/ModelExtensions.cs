@@ -12,7 +12,6 @@ namespace LoLPredict.Pipelines.DAL
             return $"{patch.Major}.{patch.Minor}.{patch.Version}";
         } 
 
-
         public static IList<int> CreatePatchComponents(this string patchNumber)
         {
             return patchNumber.Split('.')
