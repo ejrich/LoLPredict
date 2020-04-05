@@ -54,7 +54,7 @@ namespace LoLPredict.Web.Tests.DAL
             await _context.Champions.AddRangeAsync(expectedChampions);
             await _context.SaveChangesAsync();
 
-            var champions = await _target.LoadChampionsByPatch("9.9");
+            var champions = await _target.LoadChampionsByPatch("9.7");
 
             Assert.IsFalse(champions.Any());
 

@@ -12,6 +12,7 @@ namespace LoLPredict.Pipelines.DAL
         Task<Patch> LoadLivePatch();
         Task InsertPatch(string number, bool live);
         Task UpdatePatch(Patch patch);
+        Task<IEnumerable<Champion>> LoadAllChampions();
         Task<IEnumerable<Champion>> LoadChampions(string patch);
         Task InsertChampions(IEnumerable<Champion> champions);
         Task<bool> GameResultExists(long id);
@@ -56,6 +57,11 @@ namespace LoLPredict.Pipelines.DAL
         {
             _context.Patches.Update(patch);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Champion>> LoadAllChampions()
+        {
+            return await _context.Champions.ToListAsync();
         }
 
         public async Task<IEnumerable<Champion>> LoadChampions(string patch)
