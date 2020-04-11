@@ -1,4 +1,4 @@
-﻿import React, { useRef } from 'react';
+﻿import React, { useRef, useMemo } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import { useDrag, useDrop } from 'react-dnd'
@@ -21,6 +21,7 @@ const useStyles = makeStyles({
 interface Props {
     index: number
     team: boolean,
+    patch: string | null,
     champion: Champion,
     onClick: () => void,
     moveChampion: (dragIndex: number, Index: number) => void
@@ -32,7 +33,7 @@ interface DragItem {
     type: string
 }
 
-const ChampionPick = ({ index, team, champion, onClick, moveChampion }: Props) => {
+const ChampionPick = ({ index, team, patch, champion, onClick, moveChampion }: Props) => {
     const classes = useStyles();
 
     const ref = useRef<HTMLDivElement>(null);
@@ -63,7 +64,7 @@ const ChampionPick = ({ index, team, champion, onClick, moveChampion }: Props) =
     drag(drop(ref));
 
     if (champion) {
-        const url = `https://ddragon.leagueoflegends.com/cdn/${champion.patch}/img/champion/${champion.image}.png`;
+        const url = `https://ddragon.leagueoflegends.com/cdn/${patch}/img/champion/${champion.image}.png`;
         return <Avatar ref={ref} onClick={onClick} src={url} className={classes.champion} />;
     }
 

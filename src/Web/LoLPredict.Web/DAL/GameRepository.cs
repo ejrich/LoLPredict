@@ -37,7 +37,7 @@ namespace LoLPredict.Web.DAL
                 .ToList();
 
             var champions = await _context.Champions
-                .Where(c => c.Major <= patchComponents[0] && c.Minor <= patchComponents[1])
+                .Where(c => c.Major < patchComponents[0] || (c.Major == patchComponents[0] && c.Minor <= patchComponents[1]))
                 .OrderBy(_ => _.Name)
                 .ToListAsync();
 
