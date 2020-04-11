@@ -3,7 +3,7 @@
   "Values": {
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
-    "ConnectionStrings__Game": "***REMOVED***",
-    "AzureStorageConnectionString": "***REMOVED***"
+    "ConnectionStrings__Game": "Server=tcp:lolpredict-dev.database.windows.net,1433;Initial Catalog=Game;Persist Security Info=False;User ID=evan;Password=FOOTball09!hello;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
+    "AzureStorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=lolpredictdevmodels;AccountKey=VdFlYoIcWK7PzTU0lQSrqAp89XAsmxaKOSqKMv5ViZNc6bvs5WJGzAtDg1P9dDkB+FlmtKGHqk4BH1qrGpZhFg==;EndpointSuffix=core.windows.net"
   }
 }
