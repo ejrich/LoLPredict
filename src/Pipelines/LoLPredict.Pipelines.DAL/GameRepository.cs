@@ -69,7 +69,7 @@ namespace LoLPredict.Pipelines.DAL
             var patchComponents = patch.CreatePatchComponents();
 
             var champions = await _context.Champions
-                .Where(c => c.Major <= patchComponents[0] && c.Minor <= patchComponents[1])
+                .Where(c => c.Major < patchComponents[0] || (c.Major == patchComponents[0] && c.Minor <= patchComponents[1]))
                 .ToListAsync();
 
             return champions;

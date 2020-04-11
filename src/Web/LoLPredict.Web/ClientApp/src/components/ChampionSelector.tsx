@@ -39,7 +39,7 @@ interface Props {
     currentPick: number | null,
     chooseChampion: (currentPick: number, champion: Champion) => void,
     picks: Picks,
-    patch: Patch
+    patch: string | null
 }
 
 const ChampionSelector = ({ currentPick, chooseChampion, picks, patch }: Props) => {
@@ -47,15 +47,13 @@ const ChampionSelector = ({ currentPick, chooseChampion, picks, patch }: Props) 
     const [champions, setChampions] = useState<Champion[]>([]);
     const [search, setSearch] = useState('');
 
-    const patchName = patch ? `${patch.major}.${patch.minor}.${patch.version}` : null;
-
     useEffect(() => {
-        if (patchName) {
-            fetch(`/api/v1/champion/${patchName}`)
+        if (patch) {
+            fetch(`/api/v1/champion/${patch}`)
                 .then(res => res.json())
                 .then(setChampions);
         }
-    }, [patchName]);
+    }, [patch]);
 
     const filteredChampions = useMemo(() => champions.filter(_ => _.name.toLowerCase().includes(search.toLowerCase())), [champions, search]);
 
@@ -75,7 +73,7 @@ const ChampionSelector = ({ currentPick, chooseChampion, picks, patch }: Props) 
             <div className={classes.root}>
                 <GridList cellHeight={110} cols={6} className={classes.gridList}>
                     { filteredChampions.map(champion => {
-                        const url = `https://ddragon.leagueoflegends.com/cdn/${patchName}/img/champion/${champion.image}.png`;
+                        const url = `https://ddragon.leagueoflegends.com/cdn/${patch}/img/champion/${champion.image}.png`;
 
                         if (picks[champion.name]) {
                             return (

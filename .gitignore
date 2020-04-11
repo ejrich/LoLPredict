@@ -338,3 +338,6 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+# VS Code files so local updates are not tracked
+.vscode/
