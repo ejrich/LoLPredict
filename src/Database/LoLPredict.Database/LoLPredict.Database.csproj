@@ -7,17 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Scripts\Script0001 - Create Tables.sql" />
-    <None Remove="Scripts\Script0002 - Models Table.sql" />
-    <None Remove="Scripts\Script0003 - Patch Update.sql" />
-    <None Remove="Scripts\Script0004 - Summoner Table.sql" />
+    <None Remove="Scripts\*" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Scripts\Script0001 - Create Tables.sql" />
-    <EmbeddedResource Include="Scripts\Script0002 - Models Table.sql" />
-    <EmbeddedResource Include="Scripts\Script0003 - Patch Update.sql" />
-    <EmbeddedResource Include="Scripts\Script0004 - Summoner Table.sql" />
+    <EmbeddedResource Include="Scripts\*" />
   </ItemGroup>
 
   <ItemGroup>

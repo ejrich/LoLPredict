@@ -12,6 +12,7 @@ namespace LoLPredict.Pipelines.DAL
         Task<Patch> LoadLivePatch();
         Task InsertPatch(string number, bool live);
         Task UpdatePatch(Patch patch);
+        Task<IEnumerable<Champion>> LoadAllChampions();
         Task<IEnumerable<Champion>> LoadChampions(string patch);
         Task InsertChampions(IEnumerable<Champion> champions);
         Task<bool> GameResultExists(long id);
@@ -40,9 +41,7 @@ namespace LoLPredict.Pipelines.DAL
 
         public async Task InsertPatch(string number, bool live)
         {
-            var patchComponents = number.Split('.')
-                .Select(_ => Convert.ToInt32(_))
-                .ToList();
+            var patchComponents = number.CreatePatchComponents();
 
             _context.Patches.Add(new Patch
             {
@@ -60,9 +59,18 @@ namespace LoLPredict.Pipelines.DAL
             await _context.SaveChangesAsync();
         }
 
+        public async Task<IEnumerable<Champion>> LoadAllChampions()
+        {
+            return await _context.Champions.ToListAsync();
+        }
+
         public async Task<IEnumerable<Champion>> LoadChampions(string patch)
         {
-            var champions = await _context.Champions.Where(_ => _.Patch == patch).ToListAsync();
+            var patchComponents = patch.CreatePatchComponents();
+
+            var champions = await _context.Champions
+                .Where(c => c.Major <= patchComponents[0] && c.Minor <= patchComponents[1])
+                .ToListAsync();
 
             return champions;
         }

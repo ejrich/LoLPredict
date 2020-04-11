@@ -52,11 +52,16 @@ namespace LoLPredict.PatchPipeline
                     await _gameRepository.UpdatePatch(livePatch);
                 }
 
-                // load champion data
+                // load all champions in the database
+                var allChampions = await _gameRepository.LoadAllChampions();
+
+                // load champion data from the current patch
                 var champions = await LoadChampions(currentPatch.V);
 
+                var newChampions = champions.Where(c => allChampions.All(_ => _.Id != c.Id));
+
                 // Insert champion records
-                await _gameRepository.InsertChampions(champions);
+                await _gameRepository.InsertChampions(newChampions);
 
                 return new PatchData
                 {
@@ -92,12 +97,16 @@ namespace LoLPredict.PatchPipeline
 
         private static Champion MapChampionDataToChampion(ChampionData champ)
         {
+            var patchComponents = champ.Version.CreatePatchComponents();
+
             return new Champion
             {
                 Id = Convert.ToInt32(champ.Key),
                 Name = champ.Name,
                 Image = champ.Image.Full.Substring(0, champ.Image.Full.Length - 4),
-                Patch = champ.Version
+                Major = patchComponents[0],
+                Minor = patchComponents[1],
+                Version = patchComponents[2]
             };
         }
     }

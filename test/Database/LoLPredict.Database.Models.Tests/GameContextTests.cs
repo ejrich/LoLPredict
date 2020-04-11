@@ -44,7 +44,9 @@ namespace LoLPredict.Database.Models.Test
                 Id = 100,
                 Name = "Aatrox",
                 Image = "aatrox.png",
-                Patch = "9.1.1"
+                Major = 9,
+                Minor = 1,
+                Version = 1
             });
             _target.Results.Add(new GameResult
             {

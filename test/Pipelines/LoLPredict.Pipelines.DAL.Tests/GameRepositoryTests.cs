@@ -93,13 +93,13 @@ namespace LoLPredict.Pipelines.DAL.Tests
         {
             var expectedChampions = new List<Champion>
             {
-                CreateChampion(1, "Annie", "9.8"), CreateChampion(2, "Aatrox", "9.8")
+                CreateChampion(1, "Annie", 9, 8), CreateChampion(2, "Aatrox", 9, 8)
             };
 
             await _context.Champions.AddRangeAsync(expectedChampions);
             await _context.SaveChangesAsync();
 
-            var champions = await _target.LoadChampions("9.9");
+            var champions = await _target.LoadChampions("9.7");
 
             Assert.IsFalse(champions.Any());
 
@@ -113,7 +113,7 @@ namespace LoLPredict.Pipelines.DAL.Tests
         {
             var expectedChampions = new List<Champion>
             {
-                CreateChampion(1, "Annie", "9.8"), CreateChampion(2, "Aatrox", "9.8")
+                CreateChampion(1, "Annie", 9, 8), CreateChampion(2, "Aatrox", 9, 8)
             };
 
             await _target.InsertChampions(expectedChampions);
@@ -215,13 +215,14 @@ namespace LoLPredict.Pipelines.DAL.Tests
             };
         }
 
-        private static Champion CreateChampion(int id, string name, string patch)
+        private static Champion CreateChampion(int id, string name, int major, int minor)
         {
             return new Champion
             {
                 Id = id,
                 Name = name,
-                Patch = patch
+                Major = major,
+                Minor = minor
             };
         }
 

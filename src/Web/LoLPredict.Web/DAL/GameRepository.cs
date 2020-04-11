@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LoLPredict.Database.Models;
@@ -31,8 +32,12 @@ namespace LoLPredict.Web.DAL
 
         public async Task<IEnumerable<Champion>> LoadChampionsByPatch(string patch)
         {
+            var patchComponents = patch.Split('.')
+                .Select(_ => Convert.ToInt32(_))
+                .ToList();
+
             var champions = await _context.Champions
-                .Where(_ => _.Patch == patch)
+                .Where(c => c.Major <= patchComponents[0] && c.Minor <= patchComponents[1])
                 .OrderBy(_ => _.Name)
                 .ToListAsync();
 
