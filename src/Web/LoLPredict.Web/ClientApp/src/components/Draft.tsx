@@ -89,18 +89,20 @@ const Draft = ({ selectedPatch }: Props) => {
 
     const picks = useMemo(() => combinePicks(blueChampions, redChampions), [blueChampions, redChampions]);
 
+    const patch = useMemo(() => selectedPatch ? `${selectedPatch.major}.${selectedPatch.minor}.${selectedPatch.version}` : null, [selectedPatch]);
+
     return (
         <Fragment>
             <PredictionBar prediction={prediction} />
             <Grid container justify='center' alignItems='center'>
                 <Grid item xs={2}>
-                    <TeamChampions team={blueChampions} setChampions={setBlueChampions} side={BlueSide} setCurrentPick={setCurrentPick} />
+                    <TeamChampions team={blueChampions} setChampions={setBlueChampions} side={BlueSide} setCurrentPick={setCurrentPick} patch={patch} />
                 </Grid>
                 <Grid item xs={8}>
-                    <ChampionSelector picks={picks} currentPick={currentPick} chooseChampion={chooseChampion} patch={selectedPatch} />
+                    <ChampionSelector picks={picks} currentPick={currentPick} chooseChampion={chooseChampion} patch={patch} />
                 </Grid>
                 <Grid item xs={2}>
-                    <TeamChampions team={redChampions} setChampions={setRedChampions} side={RedSide} setCurrentPick={setCurrentPick} />
+                    <TeamChampions team={redChampions} setChampions={setRedChampions} side={RedSide} setCurrentPick={setCurrentPick} patch={patch} />
                 </Grid>
             </Grid>
         </Fragment>
