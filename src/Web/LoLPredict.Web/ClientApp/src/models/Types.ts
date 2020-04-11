@@ -1,8 +1,7 @@
 export interface Champion {
     id: number,
     name: string,
-    image: string,
-    patch: string
+    image: string
 }
 
 export interface Team {
