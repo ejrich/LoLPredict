@@ -1,30 +1,36 @@
 ﻿import React, { useRef, useMemo } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Avatar from '@material-ui/core/Avatar';
 import { useDrag, useDrop } from 'react-dnd'
 import { Champion } from '../models/Types';
 
 const useStyles = makeStyles({
-    blank: {
-        margin: 10,
+    icon: {
         width: 100,
         height: 100,
         backgroundColor: '#1e282d'
     },
-    champion: {
-        margin: 10,
-        width: 100,
-        height: 100
+    border: {
+        marginLeft: 'auto',
+        marginRight: '21%',
+        padding: '5px',
+        width: 'min-content'
     },
+    blue: {
+        backgroundColor: '#1580B6'
+    },
+    red: {
+        backgroundColor: '#DE2F2F'
+    }
 });
 
 interface Props {
-    index: number
-    team: boolean,
-    patch: string | null,
-    champion: Champion,
-    onClick: () => void,
-    moveChampion: (dragIndex: number, Index: number) => void
+    index: number;
+    team: boolean
+    patch: string | null;
+    selecting: boolean;
+    champion: Champion;
+    onClick: () => void;
+    moveChampion: (dragIndex: number, Index: number) => void;
 }
 
 interface DragItem {
@@ -33,7 +39,7 @@ interface DragItem {
     type: string
 }
 
-const ChampionPick = ({ index, team, patch, champion, onClick, moveChampion }: Props) => {
+const ChampionPick = ({ index, team, patch, selecting, champion, onClick, moveChampion }: Props) => {
     const classes = useStyles();
 
     const ref = useRef<HTMLDivElement>(null);
@@ -63,12 +69,17 @@ const ChampionPick = ({ index, team, patch, champion, onClick, moveChampion }: P
 
     drag(drop(ref));
 
-    if (champion) {
-        const url = `https://ddragon.leagueoflegends.com/cdn/${patch}/img/champion/${champion.image}.png`;
-        return <Avatar ref={ref} onClick={onClick} src={url} className={classes.champion} />;
-    }
+    const selectingClass = selecting ? team ? classes.red : classes.blue : '';
 
-    return <Avatar ref={ref} onClick={onClick} className={classes.blank} />;
+    const url = champion ? `https://ddragon.leagueoflegends.com/cdn/${patch}/img/champion/${champion.image}.png` : null;
+
+    return (
+        <div className={`${classes.border} ${selectingClass}`}>
+            <div ref={ref} onClick={onClick} className={classes.icon}>
+                { url && <img style={{ width: '100%' }} src={url} /> } 
+            </div>
+        </div>
+    );
 };
 
 export default ChampionPick;

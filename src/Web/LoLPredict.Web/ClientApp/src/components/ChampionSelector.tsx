@@ -57,12 +57,10 @@ const ChampionSelector = ({ currentPick, chooseChampion, picks, patch }: Props) 
 
     const filteredChampions = useMemo(() => champions.filter(_ => _.name.toLowerCase().includes(search.toLowerCase())), [champions, search]);
 
-    if (!currentPick) return <Fragment />;
-
     return (
         <Fragment>
             <TextField
-                label="Search field"
+                label="Search"
                 type="search"
                 className={classes.textField}
                 margin='normal'
@@ -84,7 +82,7 @@ const ChampionSelector = ({ currentPick, chooseChampion, picks, patch }: Props) 
                         }
 
                         return (
-                            <GridListTile key={champion.name} cols={1} onClick={() => chooseChampion(currentPick, champion)}>
+                            <GridListTile key={champion.name} cols={1} onClick={() => currentPick && chooseChampion(currentPick, champion)}>
                                 <img src={url} alt={url} className={classes.icon} />
                             </GridListTile>
                         );

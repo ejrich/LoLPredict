@@ -25,7 +25,11 @@ namespace LoLPredict.Web.DAL
 
         public async Task<IEnumerable<Patch>> LoadPatches()
         {
-            var patches = await _context.Patches.ToListAsync();
+            var patches = await _context.Patches
+                .OrderByDescending(_ => _.Major)
+                .ThenByDescending(_ => _.Minor)
+                .Take(3)
+                .ToListAsync();
 
             return patches;
         }

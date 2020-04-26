@@ -96,13 +96,15 @@ const Draft = ({ selectedPatch }: Props) => {
             <PredictionBar prediction={prediction} />
             <Grid container justify='center' alignItems='center'>
                 <Grid item xs={2}>
-                    <TeamChampions team={blueChampions} setChampions={setBlueChampions} side={BlueSide} setCurrentPick={setCurrentPick} patch={patch} />
+                    <TeamChampions team={blueChampions} setChampions={setBlueChampions} side={BlueSide}
+                        currentPick={currentPick} setCurrentPick={setCurrentPick} patch={patch} />
                 </Grid>
                 <Grid item xs={8}>
                     <ChampionSelector picks={picks} currentPick={currentPick} chooseChampion={chooseChampion} patch={patch} />
                 </Grid>
                 <Grid item xs={2}>
-                    <TeamChampions team={redChampions} setChampions={setRedChampions} side={RedSide} setCurrentPick={setCurrentPick} patch={patch} />
+                    <TeamChampions team={redChampions} setChampions={setRedChampions} side={RedSide}
+                        currentPick={currentPick} setCurrentPick={setCurrentPick} patch={patch} />
                 </Grid>
             </Grid>
         </Fragment>
