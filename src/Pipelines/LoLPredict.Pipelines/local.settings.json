@@ -3,10 +3,10 @@
   "Values": {
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
-    "ConnectionStrings__Game": "Data Source=DESKTOP-1FQCUFM;Initial Catalog=Game;Integrated Security=True",
-    "AzureStorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=lolpredictdevmodels;AccountKey=VdFlYoIcWK7PzTU0lQSrqAp89XAsmxaKOSqKMv5ViZNc6bvs5WJGzAtDg1P9dDkB+FlmtKGHqk4BH1qrGpZhFg==;EndpointSuffix=core.windows.net",
+    "ConnectionStrings__Game": "Data Source=LocalSql;Initial Catalog=Game;Integrated Security=True",
+    "AzureStorageConnectionString": "",
     "StaticDataEndpoint": "https://ddragon.leagueoflegends.com",
     "RiotApiUrl": "https://na1.api.riotgames.com",
-    "RiotApiToken": "RGAPI-7c421c3b-04a3-455d-8027-8085e57b427e"
+    "RiotApiToken": ""
   }
 }
