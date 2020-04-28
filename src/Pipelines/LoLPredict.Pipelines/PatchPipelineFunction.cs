@@ -16,7 +16,7 @@ namespace LoLPredict.Pipelines
         }
 
         [FunctionName("PatchPipeline")]
-        public async Task Run([TimerTrigger("0 6 * * *")]TimerInfo timer, ILogger log)
+        public async Task Run([TimerTrigger("0 0 6 * * *")]TimerInfo timer, ILogger log)
         {
             var patch = await _patchPipeline.UpdatePatch();
 
