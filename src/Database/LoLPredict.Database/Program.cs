@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
 using DbUp;
 using Microsoft.Extensions.Configuration;
@@ -10,18 +9,14 @@ namespace LoLPredict.Database
     {
         public static int Main(string[] args)
         {
-            var connectionString = args.FirstOrDefault();
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables()
+                .Build();
 
-            if (connectionString == null)
-            {
-                Console.WriteLine("Couldn't find the command line argument, using the default configuration");
+            var connectionString = config["ConnectionString"];
 
-                var config = new ConfigurationBuilder()
-                    .AddJsonFile("appsettings.json")
-                    .Build();
-
-                connectionString = config["ConnectionString"];
-            }
+            Console.WriteLine($"Using connection string: {connectionString}");
 
             EnsureDatabase.For.SqlDatabase(connectionString);
 
