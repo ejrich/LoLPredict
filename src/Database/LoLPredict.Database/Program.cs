@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
 using DbUp;
 using Microsoft.Extensions.Configuration;
@@ -10,9 +9,9 @@ namespace LoLPredict.Database
     {
         public static int Main(string[] args)
         {
-            var connectionString = args.FirstOrDefault();
+            var connectionString = string.Join(" ", args);
 
-            if (connectionString == null)
+            if (string.IsNullOrWhiteSpace(connectionString))
             {
                 var config = new ConfigurationBuilder()
                     .AddJsonFile("appsettings.json")
