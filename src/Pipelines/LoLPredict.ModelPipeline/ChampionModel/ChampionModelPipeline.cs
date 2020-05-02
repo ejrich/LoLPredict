@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using LoLPredict.Database.Models;
 using LoLPredict.ModelPipeline.Domain.Models;
@@ -35,7 +36,7 @@ namespace LoLPredict.ModelPipeline.ChampionModel
             var uniqueChampions = _context.Data.LoadFromEnumerable(championIds);
 
             var gameResults = (await _gameRepository.LoadGameResults(livePatch.Number()))
-                .Select(MapGameToInputGame);
+                .SelectMany(MapGameToInputGame);
 
             var data = _context.Data.LoadFromEnumerable(gameResults);
 
@@ -67,9 +68,9 @@ namespace LoLPredict.ModelPipeline.ChampionModel
             return _context.Transforms.Categorical.OneHotEncoding(columnName, keyData: keyData);
         }
 
-        private static InputGame MapGameToInputGame(GameResult game)
+        private static IEnumerable<InputGame> MapGameToInputGame(GameResult game)
         {
-            return new InputGame
+            yield return new InputGame
             {
                 BlueTop = game.BlueTop,
                 BlueJungle = game.BlueJungle,
@@ -82,6 +83,20 @@ namespace LoLPredict.ModelPipeline.ChampionModel
                 RedBottom = game.RedBottom,
                 RedSupport = game.RedSupport,
                 WinningTeam = game.Winner
+            };
+            yield return new InputGame
+            {
+                BlueTop = game.RedTop,
+                BlueJungle = game.RedJungle,
+                BlueMid = game.RedMid,
+                BlueBottom = game.RedBottom,
+                BlueSupport = game.RedSupport,
+                RedTop = game.BlueTop,
+                RedJungle = game.BlueJungle,
+                RedMid = game.BlueMid,
+                RedBottom = game.BlueBottom,
+                RedSupport = game.BlueSupport,
+                WinningTeam = !game.Winner
             };
         }
     }
