@@ -42,7 +42,7 @@ namespace RiotApi
             var earliestCall = _apiCalls.Peek();
             var waitTime = earliestCall.AddMinutes(1).Subtract(DateTime.Now);
 
-            Thread.Sleep(waitTime);
+            if (waitTime.Ticks > 0) Thread.Sleep(waitTime);
 
             _apiCalls.Dequeue();
             _apiCalls.Enqueue(DateTime.Now);
