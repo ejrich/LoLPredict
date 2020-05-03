@@ -6,5 +6,6 @@ namespace LoLPredict.Pipelines.DAL
         public string StaticDataEndpoint { get; set; }
         public string RiotApiUrl { get; set; }
         public string RiotApiToken { get; set; }
+        public int RiotApiRateLimit { get; set; }
     }
 }

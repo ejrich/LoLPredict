@@ -21,7 +21,8 @@ namespace LoLPredict.GamePipeline
         public MatchGenerator(IRestClientFactory restClientFactory, IGameRepository gameRepository,
             IRiotModelMapper riotModelMapper, IOptionsMonitor<Settings> options)
         {
-            _client = restClientFactory.CreateRestClient(options.CurrentValue.RiotApiUrl, options.CurrentValue.RiotApiToken);
+            _client = restClientFactory.CreateRestClient(options.CurrentValue.RiotApiUrl, options.CurrentValue.RiotApiToken,
+                options.CurrentValue.RiotApiRateLimit);
             _gameRepository = gameRepository;
             _riotModelMapper = riotModelMapper;
         }

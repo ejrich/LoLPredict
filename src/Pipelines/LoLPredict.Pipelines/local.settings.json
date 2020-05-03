@@ -8,5 +8,6 @@
     "StaticDataEndpoint": "https://ddragon.leagueoflegends.com",
     "RiotApiUrl": "https://na1.api.riotgames.com",
     "RiotApiToken": ""
+    "RiotApiRateLimit": 50
   }
 }
